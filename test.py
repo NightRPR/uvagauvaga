@@ -2,12 +2,11 @@ import pygame
 import sys
 import random
 
-size = width, height = 1120, 630
+size = width, height = 1500, 900
 black = 0, 0, 0
 white = 255, 255, 255
 SPEED1, SPEED2 = 4, 7#random.randint(5, 7)
 cnt = 0
-
 
 
 bg1 = pygame.image.load("room1_back.png")
@@ -40,6 +39,8 @@ image_lose = pygame.transform.scale(image_lose, (image_lose.get_width() // 2, im
 image_fight = pygame.image.load("fight.png")
 image_fight = pygame.transform.scale(image_fight, (image_fight.get_width() // 2, image_fight.get_height() // 2))
 image_pause = pygame.image.load("pause_back.png")
+image_wall = pygame.image.load("wall.png")
+
 
 class Pers:
     image = image1
@@ -138,6 +139,26 @@ class Item:
     def collides_with(self, b):
         return self.rect.colliderect(b.rect)
 
+class Cell:
+    image = image_wall
+
+    def __init__(self, x=None, y=None, type = 0,filename=None):
+        if filename:
+            self.image = filename
+        self.rect = self.image.get_rect()
+        self.rect.x = x
+        self.rect.y = y
+        self.cell_size = 50
+        self.line_width = 5
+        #self.rect = (self.rect.x, self.rect.y, self.cell_size, self.cell_size)
+        self.type = type
+
+    def process_draw(self, screen):
+        if self.type == 0:
+            pygame.draw.circle(screen, black, (self.rect.x, self.rect.y), self.line_width)
+        else:
+            screen.blit(self.image, self.rect)
+
 npc1 = Pers(150, 300, image3, True)
 npc2 = Pers(900, 200, image5, True)
 gg = Pers(0, 0, image1)
@@ -200,7 +221,19 @@ def room1():
     door = Door(width // 2 - 90, 0)
     gg.rect.x = width // 2
     gg.rect.y = door.rect.bottom + 20
-
+    field = []
+    f = open('field.txt', 'r')
+    data = f.readlines()
+    for i in range(len(data)):
+        temp = []
+        for j in range(len(data[i])):
+            if data[i][j] == '0':
+                a = Cell(j * 50, i * 50, 0)
+                temp.append(a)
+            if data[i][j] == '1':
+                a = Cell(j * 50, i * 50, image_wall)
+                temp.append(a)
+            field.append(temp)
     while not gameover:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -285,12 +318,16 @@ def room1():
             npc1.image = image4
         else:
             npc1.image = image3
+        screen.fill(black)
+        for i in field:
+            for j in i:
+                j.process_draw(screen)
+                # continue
         gg.rect.x += speed[0]
         gg.rect.y += speed[1]
         npc1.rect.x += speed_mob[0]
         npc1.rect.y += speed_mob[1]
-        #screen.fill(black)
-        screen.blit(bg1, (-10, 0))
+        #screen.blit(bg1, (-10, 0))
         if key.check_used == 0:
             key.process_draw(screen)
         gg.process_draw(screen)
