@@ -1,14 +1,13 @@
 import pygame
 import sys
 import random
+from test3 import Button, Pers, Target, Door, Item
 
 size = width, height = 1120, 630
 black = 0, 0, 0
 white = 255, 255, 255
-SPEED1, SPEED2 = 4, 7#random.randint(5, 7)
+SPEED1, SPEED2 = 4, 7  # random.randint(5, 7)
 cnt = 0
-
-
 
 bg1 = pygame.image.load("room1_back.png")
 bg1 = pygame.transform.scale(bg1, (bg1.get_width() // 1, bg1.get_height() // 1))
@@ -41,108 +40,12 @@ image_fight = pygame.image.load("fight.png")
 image_fight = pygame.transform.scale(image_fight, (image_fight.get_width() // 2, image_fight.get_height() // 2))
 image_pause = pygame.image.load("pause_back.png")
 
-class Pers:
-    image = image1
-
-    def __init__(self, x = None, y = None, filename = None, check_allive = True):
-        if filename:
-            self.image = filename
-        self.rect = self.image.get_rect()
-        self.rect.x = x - self.rect.width
-        self.rect.y = y
-        self.check_allive = check_allive
-
-    #def process_logic(self):
-
-    def process_draw(self, screen):
-        screen.blit(self.image, self.rect)
-
-    def collides_with(self, b):
-        return self.rect.colliderect(b.rect)
-
-class Button:
-    def __init__(self, x=None, y=None, wdth=None, hght=None, color = (0, 0, 0), border = 0, font = 'Calibri', text_size = 50, text = None):
-        self.color = color
-        self.x = x
-        self.y = y
-        self.width = wdth
-        self.height = hght
-        self.font = font
-        self.text_size = text_size
-        self.text = text
-        self.border = border
-
-    def check_motion(self, screen, event, color):
-        if event.type == pygame.MOUSEMOTION:
-            x, y = event.pos
-            global cnt
-            if x >= self.x and x <= self.x + self.width and y >= self.y and y <= self.y + self.height:
-                self.color = (255, 255, 255)
-                self.process_draw(screen)
-                cnt = 1
-            else:
-                self.color = color
-                self.process_draw(screen)
-                cnt = 0
-            if cnt == 0:
-                cnt = 1
-
-    def process_draw(self, screen):
-        pygame.font.init()
-        pygame.draw.rect(screen, self.color, (self.x, self.y, self.width, self.height), self.border)
-        font = pygame.font.SysFont(self.font, self.text_size, True)
-        data = self.text
-        ts = font.render(data, False, black)
-        screen.blit(ts, (self.x - 1, self.y))
-
-class Target:
-    def __init__(self, x=None, y=None, color = (255, 0, 0), R = 50):
-        self.color = color
-        self.x = x
-        self.y = y
-        self.R = R
-
-    def process_draw(self, screen):
-        pygame.draw.circle(screen, self.color, (self.x, self.y), self.R)
-
-class Door:
-    image = image_door
-
-    def __init__(self, x=None, y=None, filename=None):
-        if filename:
-            self.image = filename
-        self.rect = self.image.get_rect()
-        self.rect.x = x - self.rect.width
-        self.rect.y = y
-
-    def process_draw(self, screen):
-        screen.blit(self.image, self.rect)
-
-    def collides_with(self, b):
-        return self.rect.colliderect(b.rect)
-
-class Item:
-    image = image_key
-
-    def __init__(self, x=None, y=None, filename=None):
-        if filename:
-            self.image = filename
-        self.rect = self.image.get_rect()
-        self.rect.x = x - self.rect.width
-        self.rect.y = y
-        self.check_used = 0
-
-    def process_draw(self, screen):
-        screen.blit(self.image, self.rect)
-
-    def collides_with(self, b):
-        return self.rect.colliderect(b.rect)
-
 npc1 = Pers(150, 300, image3, True)
 npc2 = Pers(900, 200, image5, True)
 gg = Pers(0, 0, image1)
 coin = Item(random.randint(400, 700), random.randint(200, 550), image_coin)
 key = Item(random.randint(200, 1000), random.randint(200, 550), image_key)
+
 
 def menu():
     pygame.init()
@@ -191,10 +94,10 @@ def room1():
     npc1.x = 150
     npc1.y = 300
     speed = [0, 0]
-    _speed_ = 3#random.randint(-5, 5)
-    #if _speed_ < 0:
+    _speed_ = 3  # random.randint(-5, 5)
+    # if _speed_ < 0:
     #    _speed_ -= 4
-    #else:ad
+    # else:ad
     #    _speed_ += 4
     speed_mob = [_speed_, _speed_]
     door = Door(width // 2 - 90, 0)
@@ -231,12 +134,12 @@ def room1():
                     speed[1] = 0
                 elif event.key == pygame.K_s and speed[1] == SPEED1:
                     speed[1] = 0
-            #if event.type == pygame.USEREVENT:
-                #if timer % 2 == 0:
-                #    key.rect.y -= 10
-                #else:
-                #    key.rect.y += 10
-                #timer += 1
+            # if event.type == pygame.USEREVENT:
+            # if timer % 2 == 0:
+            #    key.rect.y -= 10
+            # else:
+            #    key.rect.y += 10
+            # timer += 1
         if gg.rect.right >= width and speed[0] == SPEED1 or gg.rect.left <= 0 and speed[0] == -SPEED1:
             speed[0] = 0
         if gg.rect.bottom >= height and speed[1] == SPEED1 or gg.rect.top <= 0 and speed[1] == -SPEED1:
@@ -289,7 +192,7 @@ def room1():
         gg.rect.y += speed[1]
         npc1.rect.x += speed_mob[0]
         npc1.rect.y += speed_mob[1]
-        #screen.fill(black)
+        # screen.fill(black)
         screen.blit(bg1, (-10, 0))
         if key.check_used == 0:
             key.process_draw(screen)
@@ -310,13 +213,12 @@ def room2():
     screen = pygame.display.set_mode(size)
     gameover = False
 
-
-    #npc2.check_allive = True
+    # npc2.check_allive = True
     speed = [0, 0]
-    _speed_ = 5#@random.randint(-4, 4)
-    #if _speed_ < 0:
+    _speed_ = 5  # @random.randint(-4, 4)
+    # if _speed_ < 0:
     #    _speed_ -= 3
-    #else:
+    # else:
     #    _speed_ += 3
     speed_mob = [_speed_, _speed_]
 
@@ -325,9 +227,9 @@ def room2():
     gg.rect.x = door1.rect.right + 100
     gg.rect.y = door1.rect.bottom - 100
 
-    #if npc2.collides_with(door1) or npc2.collides_with(door2) or npc2.collides_with(gg):
-        #npc2.rect.x = width // 2
-        #npc2.rect.y = height // 2
+    # if npc2.collides_with(door1) or npc2.collides_with(door2) or npc2.collides_with(gg):
+    # npc2.rect.x = width // 2
+    # npc2.rect.y = height // 2
 
     while not gameover:
         for event in pygame.event.get():
@@ -437,6 +339,7 @@ def room2():
         pygame.time.wait(10)
     sys.exit()
 
+
 def fight():
     a = pygame.mixer.music.get_pos()
     pygame.mixer.music.stop()
@@ -450,7 +353,7 @@ def fight():
     while not gameover:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                #gameover = True
+                # gameover = True
                 sys.exit()
             if event.type == pygame.MOUSEBUTTONDOWN:
                 x, y = event.pos
@@ -471,6 +374,7 @@ def fight():
         pygame.display.flip()
         pygame.time.wait(10)
     return check
+
 
 def game_over():
     screen = pygame.display.set_mode(size)
@@ -509,6 +413,7 @@ def game_over():
             pygame.time.wait(10)
     sys.exit()
 
+
 def win():
     pygame.init()
     pygame.mixer.init()
@@ -540,7 +445,7 @@ def win():
             if event.type == pygame.QUIT:
                 gameover = True
 
-            #screen.blit(black, (-10, 0))
+            # screen.blit(black, (-10, 0))
             screen.fill((255, 255, 255))
             screen.blit(image_win, (width // 2 - 276, height // 2 - 120))
             exit_button.process_draw(screen)
@@ -548,6 +453,7 @@ def win():
             pygame.display.flip()
             pygame.time.wait(10)
     sys.exit()
+
 
 def Pause():
     pygame.init()
@@ -557,15 +463,15 @@ def Pause():
     screen = pygame.display.set_mode(size)
     gameover = False
 
-    #key.check_used = 0
-    #coin.check_used = 0
-    #menu_button = Button((width // 2) - 80, (height // 2) - 35, 140, 50, (255, 0, 0), 0, 'Calibri', 50, 'Меню')
+    # key.check_used = 0
+    # coin.check_used = 0
+    # menu_button = Button((width // 2) - 80, (height // 2) - 35, 140, 50, (255, 0, 0), 0, 'Calibri', 50, 'Меню')
     continue_button = Button(width - 400, 100, 276, 50, (255, 0, 0), 0, 'Calibri', 50, 'Продолжить')
     while not gameover:
         for event in pygame.event.get():
             if event.type == pygame.MOUSEBUTTONDOWN:
                 x, y = event.pos
-                #if x >= menu_button.x and x <= menu_button.x + menu_button.width and y >= menu_button.y and y <= menu_button.y + menu_button.height:
+                # if x >= menu_button.x and x <= menu_button.x + menu_button.width and y >= menu_button.y and y <= menu_button.y + menu_button.height:
                 #    gameover = True
                 #    menu()
                 #    sys.exit()
@@ -583,21 +489,22 @@ def Pause():
                 else:
                     continue_button.border = 0
                     continue_button.process_draw(screen)
-                    #sys.exit()
+                    # sys.exit()
 
-            #menu_button.check_motion(screen, event, (255, 0, 0))
-            #continue_button.check_motion(screen, event, (255, 0, 0))
+            # menu_button.check_motion(screen, event, (255, 0, 0))
+            # continue_button.check_motion(screen, event, (255, 0, 0))
             if event.type == pygame.QUIT:
                 gameover = True
                 sys.exit()
 
-            #screen.fill((0, 0, 0))
+            # screen.fill((0, 0, 0))
             screen.blit(image_pause, (0, 0))
-            #menu_button.process_draw(screen)
+            # menu_button.process_draw(screen)
             continue_button.process_draw(screen)
             pygame.display.flip()
             pygame.time.wait(10)
-    #sys.exit()
+    # sys.exit()
+
 
 if __name__ == '__main__':
     menu()
