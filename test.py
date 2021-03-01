@@ -5,10 +5,8 @@ import random
 size = width, height = 1120, 630
 black = 0, 0, 0
 white = 255, 255, 255
-SPEED1, SPEED2 = 4, 7#random.randint(5, 7)
+SPEED1, SPEED2 = 4, 7
 cnt = 0
-
-
 
 bg1 = pygame.image.load("room1_back.png")
 bg1 = pygame.transform.scale(bg1, (bg1.get_width() // 1, bg1.get_height() // 1))
