@@ -9,8 +9,10 @@ black = (0, 0, 0)
 player_speed = 7
 object_speed = 5
 
-image_pers = pygame.image.load("gg_right.png")
-image_pers = pygame.transform.scale(image_pers, (image_pers.get_width() // 11, image_pers.get_height() // 11))
+image_pers_right = pygame.image.load("gg_right.png")
+image_pers_right = pygame.transform.scale(image_pers_right, (image_pers_right.get_width() // 11, image_pers_right.get_height() // 11))
+image_pers_left = pygame.image.load("gg_left.png")
+image_pers_left = pygame.transform.scale(image_pers_left, (image_pers_left.get_width() // 11, image_pers_left.get_height() // 11))
 image_key = pygame.image.load('key.png')
 image_key = pygame.transform.scale(image_key, (image_key.get_width() // 4, image_key.get_height() // 4))
 image_coin = pygame.image.load('coin.png')
@@ -79,7 +81,7 @@ class Door(pygame.sprite.Sprite):
 key = Item(random.randint(50, 500), random.randint(100, 400), image_key)
 coin = Item(random.randint(500, 950), random.randint(100, 400), image_coin)
 door = Door(14 * 48 + 10, 0, image_door)
-player = Pers(100, 200, image_pers)
+player = Pers(100, 200, image_pers_right)
 items = pygame.sprite.Group()
 walls = pygame.sprite.Group()
 doors = pygame.sprite.Group()
@@ -109,8 +111,10 @@ def room1():
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_a:
                     player.speed[0] = -player_speed
+                    player.image = image_pers_left
                 elif event.key == pygame.K_d:
                     player.speed[0] = player_speed
+                    player.image = image_pers_right
                 elif event.key == pygame.K_w:
                     player.speed[1] = -player_speed
                 elif event.key == pygame.K_s:
