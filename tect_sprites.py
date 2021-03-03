@@ -8,15 +8,20 @@ white = (255, 255, 255)
 black = (0, 0, 0)
 player_speed = 7
 enemy_speed = 5
+cell_size = 50
 
 image_pers_right = pygame.image.load("gg_right.png")
 image_pers_right = pygame.transform.scale(image_pers_right, (image_pers_right.get_width() // 11, image_pers_right.get_height() // 11))
 image_pers_left = pygame.image.load("gg_left.png")
 image_pers_left = pygame.transform.scale(image_pers_left, (image_pers_left.get_width() // 11, image_pers_left.get_height() // 11))
-image_mob_right = pygame.image.load("mob1_right.png")
-image_mob_right = pygame.transform.scale(image_mob_right, (image_mob_right.get_width() // 4, image_mob_right.get_height() // 4))
-image_mob_left = pygame.image.load("mob1_left.png")
-image_mob_left = pygame.transform.scale(image_mob_left, (image_mob_left.get_width() // 4, image_mob_left.get_height() // 4))
+image_mob1_right = pygame.image.load("mob1_right.png")
+image_mob1_right = pygame.transform.scale(image_mob1_right, (image_mob1_right.get_width() // 6, image_mob1_right.get_height() // 6))
+image_mob1_left = pygame.image.load("mob1_left.png")
+image_mob1_left = pygame.transform.scale(image_mob1_left, (image_mob1_left.get_width() // 6, image_mob1_left.get_height() // 6))
+image_mob2_right = pygame.image.load("mob2_right.png")
+image_mob2_right = pygame.transform.scale(image_mob2_right, (image_mob2_right.get_width() // 6, image_mob2_right.get_height() // 6))
+image_mob2_left = pygame.image.load("mob2_left.png")
+image_mob2_left = pygame.transform.scale(image_mob2_left, (image_mob2_left.get_width() // 6, image_mob2_left.get_height() // 6))
 
 image_key = pygame.image.load('key.png')
 image_key = pygame.transform.scale(image_key, (image_key.get_width() // 4, image_key.get_height() // 4))
@@ -101,46 +106,77 @@ class Door(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.x = x
         self.rect.y = y
+        
+def read_field1():
+    f = open('field1.txt', 'r')
+    data = f.readlines()
+    for i in range(len(data)):
+        for j in range(len(data[i])):
+            if data[i][j] == '1':
+                w = Wall(j * cell_size, i * cell_size, image_wall)
+                walls1.add(w)
+            if data[i][j] == '@':
+                player.rect.x, player.rect.y = j * cell_size, i * cell_size
+            if data[i][j] == 'k':
+                key.rect.x, key.rect.y = j * cell_size, i * cell_size
+            if data[i][j] == 'c':
+                coin.rect.x, coin.rect.y = j * cell_size, i * cell_size
+            if data[i][j] == 'e':
+                enemy1.rect.x, enemy1.rect.y = j * cell_size, i * cell_size
+            if data[i][j] == 'd':
+                door1.rect.x, door1.rect.y = j * cell_size, i * cell_size
 
-key = Item(random.randint(50, 500), random.randint(100, 400), image_key)
-coin = Item(random.randint(500, 950), random.randint(100, 400), image_coin)
-door = Door(14 * 50 + 10, 0, image_door)
-player = Pers(100, 200, image_pers_right)
-enemy = Enemy(random.randint(0, 1500), random.randint(0, 900), image_mob_right)
+def read_field2():
+    f = open('field2.txt', 'r')
+    data = f.readlines()
+    for i in range(len(data)):
+        for j in range(len(data[i])):
+            if data[i][j] == '1':
+                w = Wall(j * cell_size, i * cell_size, image_wall)
+                walls2.add(w)
+            if data[i][j] == '@':
+                player.rect.x, player.rect.y = j * cell_size, i * cell_size
+            if data[i][j] == 'k':
+                key.rect.x, key.rect.y = j * cell_size, i * cell_size
+            if data[i][j] == 'c':
+                coin.rect.x, coin.rect.y = j * cell_size, i * cell_size
+            if data[i][j] == 'e':
+                enemy2.rect.x, enemy2.rect.y = j * cell_size, i * cell_size
+            if data[i][j] == 'd':
+                door2.rect.x, door2.rect.y = j * cell_size, i * cell_size
 
-items = pygame.sprite.Group()
-items.add(key)#, coin)
-walls = pygame.sprite.Group()
-doors = pygame.sprite.Group()
-doors.add(door)
-enemies = pygame.sprite.Group()
-enemies.add(enemy)
+key = Item(0, 0, image_key)
+coin = Item(0, 0, image_coin)
+door1 = Door(0, 0, image_door)
+door2 = Door(0, 0, image_door)
+player = Pers(0, 0, image_pers_right)
+enemy1 = Enemy(0, 0, image_mob1_right)
+enemy2 = Enemy(0, 0, image_mob2_right)
 
+items1 = pygame.sprite.Group()
+items1.add(key)
+items2 = pygame.sprite.Group()
+items2.add(coin)
+walls1 = pygame.sprite.Group()
+walls2 = pygame.sprite.Group()
+doors1 = pygame.sprite.Group()
+doors1.add(door1)
+doors2 = pygame.sprite.Group()
+doors2.add(door2)
+enemies1 = pygame.sprite.Group()
+enemies1.add(enemy1)
+enemies2 = pygame.sprite.Group()
+enemies2.add(enemy2)
 
-f = open('field.txt', 'r')
-data = f.readlines()
-for i in range(len(data)):
-    for j in range(len(data[i])):
-        if data[i][j] == '1':
-            w = Wall(j * 50, i * 50, image_wall)
-            walls.add(w)
-
-while pygame.sprite.collide_rect(key, player) or len(pygame.sprite.spritecollide(key, doors, False)) > 0 or len(pygame.sprite.spritecollide(key, walls, False)) > 0:
-    key.x, key.y = random.randint(50, 500), random.randint(100, 400)
-#while pygame.sprite.collide_rect(coin, player) or len(pygame.sprite.spritecollide(coin, doors, False)) > 0 or len(pygame.sprite.spritecollide(coin, walls, False)) > 0:
-#    coin.x, coin.y = random.randint(500, 950), random.randint(100, 400)
-while pygame.sprite.collide_rect(enemy, player) or len(pygame.sprite.spritecollide(enemy, doors, False)) > 0 or len(pygame.sprite.spritecollide(enemy, walls, False)) > 0:
-    enemy.x, enemy.y = random.randint(0, 1500), random.randint(0, 900)
-
-def check_items_exists(*it):
+def check_items_exists1(*it):
     for i in it:
-        if i not in items:
+        if i not in items1:
             i.check_used = True
 
-def check_collide():
-    pygame.sprite.spritecollide(player, items, True)
-    player_and_walls_hit_list = pygame.sprite.spritecollide(player, walls, False)
-    enemy_and_walls_hit_list = pygame.sprite.spritecollide(enemy, walls, False)
+def check_collide1(enemy_im_l, enemy_im_r):
+    pygame.sprite.spritecollide(player, items1, True)
+    player_and_walls_hit_list = pygame.sprite.spritecollide(player, walls1, False)
+    enemy_and_walls_hit_list = pygame.sprite.spritecollide(enemy1, walls1, False)
     for w in player_and_walls_hit_list:
         if player.rect.bottom >= w.rect.top and player.rect.bottom <= w.rect.top + 15:
             if player.rect.right > w.rect.left:
@@ -155,55 +191,132 @@ def check_collide():
 
 
     for w in enemy_and_walls_hit_list:
-        print(enemy.rect.bottom, enemy.rect.top)
-        if enemy.rect.bottom >= w.rect.top and enemy.rect.bottom <= w.rect.top + 7:
-            if enemy.rect.right > w.rect.left:
-                enemy.speed[1] *= -1
-                enemy.rect.bottom = w.rect.top - 10
+        print(enemy1.rect.bottom, enemy1.rect.top)
+        if enemy1.rect.bottom >= w.rect.top and enemy1.rect.bottom <= w.rect.top + 7:
+            if enemy1.rect.right > w.rect.left:
+                enemy1.speed[1] *= -1
+                enemy1.rect.bottom = w.rect.top - 10
                 #print('up')
                 break
-        elif enemy.rect.top <= w.rect.bottom and enemy.rect.top >= w.rect.bottom - 7:
-            enemy.speed[1] *= -1
-            enemy.rect.top = w.rect.bottom + 10
+        elif enemy1.rect.top <= w.rect.bottom and enemy1.rect.top >= w.rect.bottom - 7:
+            enemy1.speed[1] *= -1
+            enemy1.rect.top = w.rect.bottom + 10
             #print('down')
             break
-        if enemy.rect.right >= w.rect.left and enemy.rect.right <= w.rect.left + 7:
-            if enemy.rect.bottom > w.rect.top:
-                enemy.speed[0] *= -1
-                enemy.rect.right = w.rect.left - 10
+        if enemy1.rect.right >= w.rect.left and enemy1.rect.right <= w.rect.left + 7:
+            if enemy1.rect.bottom > w.rect.top:
+                enemy1.speed[0] *= -1
+                enemy1.rect.right = w.rect.left - 10
+                enemy1.image = enemy_im_r
                 #print('left')
                 break
-        elif enemy.rect.left <= w.rect.right and enemy.rect.left >= w.rect.right - 7:
-            enemy.speed[0] *= -1
-            enemy.rect.left = w.rect.right + 10
+        elif enemy1.rect.left <= w.rect.right and enemy1.rect.left >= w.rect.right - 7:
+            enemy1.speed[0] *= -1
+            enemy1.rect.left = w.rect.right + 10
+            enemy1.image = enemy_im_l
             #print('right')
             break
 
 
-    if pygame.sprite.collide_rect(player, door):
+    if pygame.sprite.collide_rect(player, door1):
         if key.check_used:
             room2()
         else:
-            if player.rect.bottom >= door.rect.top and player.rect.bottom <= door.rect.top + 15:
-                if player.rect.right > door.rect.left:
-                    player.rect.bottom = door.rect.top
-            elif player.rect.top <= door.rect.bottom and player.rect.top >= door.rect.bottom - 15:
-                player.rect.top = door.rect.bottom
-            if player.rect.right >= door.rect.left and player.rect.right <= door.rect.left + 15:
-                if player.rect.bottom > door.rect.top + 15:
-                    player.rect.right = door.rect.left
-            elif player.rect.left <= door.rect.right and player.rect.left >= door.rect.right - 15:
-                player.rect.left = door.rect.right
+            if player.rect.bottom >= door1.rect.top and player.rect.bottom <= door1.rect.top + 15:
+                if player.rect.right > door1.rect.left:
+                    player.rect.bottom = door1.rect.top
+            elif player.rect.top <= door1.rect.bottom and player.rect.top >= door1.rect.bottom - 15:
+                player.rect.top = door1.rect.bottom
+            if player.rect.right >= door1.rect.left and player.rect.right <= door1.rect.left + 15:
+                if player.rect.bottom > door1.rect.top + 15:
+                    player.rect.right = door1.rect.left
+            elif player.rect.left <= door1.rect.right and player.rect.left >= door1.rect.right - 15:
+                player.rect.left = door1.rect.right
 
-def draw_all(screen):
+def draw_all1(screen):
     screen.blit(bg1, (0, 0))
     screen.blit(player.image, player.rect)
-    doors.draw(screen)
-    items.draw(screen)
-    walls.draw(screen)
-    enemies.draw(screen)
+    doors1.draw(screen)
+    items1.draw(screen)
+    walls1.draw(screen)
+    enemies1.draw(screen)
+
+def check_items_exists2(*it):
+    for i in it:
+        if i not in items2:
+            i.check_used = True
+
+def check_collide2(enemy_im_l, enemy_im_r):
+    pygame.sprite.spritecollide(player, items2, True)
+    player_and_walls_hit_list = pygame.sprite.spritecollide(player, walls2,False)
+    enemy_and_walls_hit_list = pygame.sprite.spritecollide(enemy2, walls2, False)
+    for w in player_and_walls_hit_list:
+        if player.rect.bottom >= w.rect.top and player.rect.bottom <= w.rect.top + 15:
+            if player.rect.right > w.rect.left:
+                player.rect.bottom = w.rect.top
+        elif player.rect.top <= w.rect.bottom and player.rect.top >= w.rect.bottom - 15:
+            player.rect.top = w.rect.bottom
+        if player.rect.right >= w.rect.left and player.rect.right <= w.rect.left + 15:
+            if player.rect.bottom > w.rect.top + 15:
+                player.rect.right = w.rect.left
+        elif player.rect.left <= w.rect.right and player.rect.left >= w.rect.right - 15:
+            player.rect.left = w.rect.right
+
+
+    for w in enemy_and_walls_hit_list:
+        print(enemy2.rect.bottom, enemy2.rect.top)
+        if enemy2.rect.bottom >= w.rect.top and enemy2.rect.bottom <= w.rect.top + 7:
+            if enemy2.rect.right > w.rect.left:
+                enemy2.speed[1] *= -1
+                enemy2.rect.bottom = w.rect.top - 10
+                #print('up')
+                break
+        elif enemy2.rect.top <= w.rect.bottom and enemy2.rect.top >= w.rect.bottom - 7:
+            enemy2.speed[1] *= -1
+            enemy2.rect.top = w.rect.bottom + 10
+            #print('down')
+            break
+        if enemy2.rect.right >= w.rect.left and enemy2.rect.right <= w.rect.left + 7:
+            if enemy2.rect.bottom > w.rect.top:
+                enemy2.speed[0] *= -1
+                enemy2.rect.right = w.rect.left - 10
+                enemy2.image = enemy_im_r
+                #print('left')
+                break
+        elif enemy2.rect.left <= w.rect.right and enemy2.rect.left >= w.rect.right - 7:
+            enemy2.speed[0] *= -1
+            enemy2.rect.left = w.rect.right + 10
+            enemy2.image = enemy_im_l
+            #print('right')
+            break
+
+
+    if pygame.sprite.collide_rect(player, door2):
+        if coin.check_used:
+            print('room3')
+        else:
+            if player.rect.bottom >= door2.rect.top and player.rect.bottom <= door2.rect.top + 15:
+                if player.rect.right > door2.rect.left:
+                    player.rect.bottom = door2.rect.top
+            elif player.rect.top <= door2.rect.bottom and player.rect.top >= door2.rect.bottom - 15:
+                player.rect.top = door2.rect.bottom
+            if player.rect.right >= door2.rect.left and player.rect.right <= door2.rect.left + 15:
+                if player.rect.bottom > door2.rect.top + 15:
+                    player.rect.right = door2.rect.left
+            elif player.rect.left <= door2.rect.right and player.rect.left >= door2.rect.right - 15:
+                player.rect.left = door2.rect.right
+
+def draw_all2(screen):
+    screen.blit(bg1, (0, 0))
+    screen.blit(player.image, player.rect)
+    doors2.draw(screen)
+    items2.draw(screen)
+    walls2.draw(screen)
+    enemies2.draw(screen)
 
 def room1():
+    # Считываем поле
+    read_field1()
     screen = pygame.display.set_mode((WIDTH, HEIGHT))
 
     while 1:
@@ -231,23 +344,66 @@ def room1():
                 elif event.key == pygame.K_s and player.speed[1] == player_speed:
                     player.speed[1] = 0
 
+        #print(coin.check_used)
         #Проверяем пересечение всего и вся
-        check_collide()
+        check_collide1(image_mob1_right, image_mob1_left)
 
         #Проверяем, использованы ли предметы
-        check_items_exists(key)#, coin)
+        check_items_exists1(key)
 
         #Отрисовка
-        draw_all(screen)
+        draw_all1(screen)
 
         player.update()
-        enemy.update()
+        enemy1.update()
         pygame.display.update()
         pygame.time.delay(10)
 
 
 def room2():
-    print('Wellcome to the club')
+    #Считываем поле
+    read_field2()
+    screen = pygame.display.set_mode((WIDTH, HEIGHT))
+        
+    while 1:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                sys.exit()
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_a:
+                    player.speed[0] = -player_speed
+                    player.image = image_pers_left
+                elif event.key == pygame.K_d:
+                    player.speed[0] = player_speed
+                    player.image = image_pers_right
+                elif event.key == pygame.K_w:
+                    player.speed[1] = -player_speed
+                elif event.key == pygame.K_s:
+                    player.speed[1] = player_speed
+            elif event.type == pygame.KEYUP:
+                if event.key == pygame.K_a and player.speed[0] == -player_speed:
+                    player.speed[0] = 0
+                elif event.key == pygame.K_d and player.speed[0] == player_speed:
+                    player.speed[0] = 0
+                elif event.key == pygame.K_w and player.speed[1] == -player_speed:
+                    player.speed[1] = 0
+                elif event.key == pygame.K_s and player.speed[1] == player_speed:
+                    player.speed[1] = 0
+
+        #print(coin.check_used)
+        # Проверяем пересечение всего и вся
+        check_collide2(image_mob2_right, image_mob2_left)
+
+        # Проверяем, использованы ли предметы
+        check_items_exists2(coin)
+
+        # Отрисовка
+        draw_all2(screen)
+
+        player.update()
+        enemy2.update()
+        pygame.display.update()
+        pygame.time.delay(10)
 
 if __name__ == '__main__':
     room1()
