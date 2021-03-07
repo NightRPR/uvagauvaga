@@ -2,6 +2,9 @@ import pygame
 import sys
 import random
 
+pygame.mixer.init()
+pygame.font.init()
+
 WIDTH = 1500
 HEIGHT = 900
 white = (255, 255, 255)
@@ -9,6 +12,7 @@ black = (0, 0, 0)
 player_speed = 7
 enemy_speed = 5
 cell_size = 50
+
 
 image_pers_right = pygame.image.load("gg_right.png")
 image_pers_right = pygame.transform.scale(image_pers_right, (image_pers_right.get_width() // 11, image_pers_right.get_height() // 11))
@@ -22,6 +26,8 @@ image_mob2_right = pygame.image.load("mob2_right.png")
 image_mob2_right = pygame.transform.scale(image_mob2_right, (image_mob2_right.get_width() // 6, image_mob2_right.get_height() // 6))
 image_mob2_left = pygame.image.load("mob2_left.png")
 image_mob2_left = pygame.transform.scale(image_mob2_left, (image_mob2_left.get_width() // 6, image_mob2_left.get_height() // 6))
+image_logo = pygame.image.load("pooj.jpg")
+image_logo = pygame.transform.scale(image_logo, (image_logo.get_width() // 3, image_logo.get_height() // 3))
 
 image_key = pygame.image.load('key.png')
 image_key = pygame.transform.scale(image_key, (image_key.get_width() // 4, image_key.get_height() // 4))
@@ -34,6 +40,9 @@ image_door = pygame.transform.scale(image_door, (image_door.get_width() // 4, im
 
 bg1 = pygame.image.load("room1_back.png")
 bg1 = pygame.transform.scale(bg1, (bg1.get_width() // 1, bg1.get_height() // 1))
+
+music_logo = pygame.mixer.Sound('volvo.mp3')
+music_gachi_logo = pygame.mixer.Sound('Oh yes sir.mp3')
 
 
 class Pers(pygame.sprite.Sprite):
@@ -314,6 +323,33 @@ def draw_all2(screen):
     walls2.draw(screen)
     enemies2.draw(screen)
 
+def logo():
+    screen = pygame.display.set_mode((WIDTH, HEIGHT))
+    pygame.time.set_timer(pygame.USEREVENT, 8000)
+    pygame.init()
+    gameover = False
+    channel1 = pygame.mixer.Channel(1)
+    channel0 = pygame.mixer.Channel(0)
+    channel1.play(music_logo)
+    font = pygame.font.SysFont('Algerian', 30, True)
+    ts = font.render('pooj productions', False, white)
+    screen.blit(ts, (595, 555))
+    while not gameover:
+        for event in pygame.event.get():
+            if event.type == pygame.USEREVENT:
+                gameover = True
+            if event.type == pygame.QUIT:
+                sys.exit()
+        u = pygame.time.get_ticks()
+        if  6500 < u < 6750:
+            channel0.play(music_gachi_logo)
+        screen.blit(image_logo, (625, 300))
+        pygame.display.flip()
+        pygame.time.wait(10)
+    room1()
+
+
+
 def room1():
     # Считываем поле
     read_field1()
@@ -406,4 +442,4 @@ def room2():
         pygame.time.delay(10)
 
 if __name__ == '__main__':
-    room1()
+    logo()
