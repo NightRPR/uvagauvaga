@@ -15,17 +15,17 @@ cell_size = 50
 
 
 image_pers_right = pygame.image.load("gg_right.png")
-image_pers_right = pygame.transform.scale(image_pers_right, (image_pers_right.get_width() // 11, image_pers_right.get_height() // 11))
+image_pers_right = pygame.transform.scale(image_pers_right, (image_pers_right.get_width() // 13, image_pers_right.get_height() // 13))
 image_pers_left = pygame.image.load("gg_left.png")
-image_pers_left = pygame.transform.scale(image_pers_left, (image_pers_left.get_width() // 11, image_pers_left.get_height() // 11))
+image_pers_left = pygame.transform.scale(image_pers_left, (image_pers_left.get_width() // 13, image_pers_left.get_height() // 13))
 image_mob1_right = pygame.image.load("mob1_right.png")
 image_mob1_right = pygame.transform.scale(image_mob1_right, (image_mob1_right.get_width() // 6, image_mob1_right.get_height() // 6))
 image_mob1_left = pygame.image.load("mob1_left.png")
 image_mob1_left = pygame.transform.scale(image_mob1_left, (image_mob1_left.get_width() // 6, image_mob1_left.get_height() // 6))
 image_mob2_right = pygame.image.load("mob2_right.png")
-image_mob2_right = pygame.transform.scale(image_mob2_right, (image_mob2_right.get_width() // 6, image_mob2_right.get_height() // 6))
+image_mob2_right = pygame.transform.scale(image_mob2_right, (image_mob2_right.get_width() // 7, image_mob2_right.get_height() // 7))
 image_mob2_left = pygame.image.load("mob2_left.png")
-image_mob2_left = pygame.transform.scale(image_mob2_left, (image_mob2_left.get_width() // 6, image_mob2_left.get_height() // 6))
+image_mob2_left = pygame.transform.scale(image_mob2_left, (image_mob2_left.get_width() // 7, image_mob2_left.get_height() // 7))
 image_logo = pygame.image.load("pooj.jpg")
 image_logo = pygame.transform.scale(image_logo, (image_logo.get_width() // 3, image_logo.get_height() // 3))
 
@@ -67,8 +67,12 @@ class Pers(pygame.sprite.Sprite):
         if self.rect.top < 0:
             if self.speed[1] < 0:
                 self.speed[1] = 0
-        self.rect.x += self.speed[0]
-        self.rect.y += self.speed[1]
+        if self.speed[0] != 0 and self.speed[1] != 0:
+            self.rect.x += 5 * self.speed[0] // player_speed
+            self.rect.y += 5 * self.speed[1] // player_speed
+        else:
+            self.rect.x += self.speed[0]
+            self.rect.y += self.speed[1]
 
 class Enemy(pygame.sprite.Sprite):
     def __init__(self, x, y, filename):
@@ -77,7 +81,7 @@ class Enemy(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.x = x
         self.rect.y = y
-        self.speed = [enemy_speed, enemy_speed]
+        self.speed = [enemy_speed, 0]
 
     def update(self):
         if self.rect.right > WIDTH:
@@ -183,6 +187,8 @@ def check_items_exists1(*it):
             i.check_used = True
 
 def check_collide1(enemy_im_l, enemy_im_r):
+    f = open('field1.txt', 'r')
+    data = f.readlines()
     pygame.sprite.spritecollide(player, items1, True)
     player_and_walls_hit_list = pygame.sprite.spritecollide(player, walls1, False)
     enemy_and_walls_hit_list = pygame.sprite.spritecollide(enemy1, walls1, False)
@@ -200,32 +206,75 @@ def check_collide1(enemy_im_l, enemy_im_r):
 
 
     for w in enemy_and_walls_hit_list:
-        print(enemy1.rect.bottom, enemy1.rect.top)
+        tr = [0, 1, 2, 3]
+        j = enemy1.rect.x// 50 + 1
+        i = enemy1.rect.y // 50 + 1
+        print(i, j)
         if enemy1.rect.bottom >= w.rect.top and enemy1.rect.bottom <= w.rect.top + 7:
             if enemy1.rect.right > w.rect.left:
-                enemy1.speed[1] *= -1
+                #enemy1.speed[1] *= -1
                 enemy1.rect.bottom = w.rect.top - 10
-                #print('up')
-                break
+                del tr[2]
+                if data[i][j - 1] == '1':
+                    del tr[1]
+                if data[i][j + 1] == '1':
+                    del tr[0]
+                #print('down')
         elif enemy1.rect.top <= w.rect.bottom and enemy1.rect.top >= w.rect.bottom - 7:
-            enemy1.speed[1] *= -1
+            #enemy1.speed[1] *= -1
             enemy1.rect.top = w.rect.bottom + 10
-            #print('down')
-            break
-        if enemy1.rect.right >= w.rect.left and enemy1.rect.right <= w.rect.left + 7:
+            del tr[3]
+            if data[i][j - 1] == '1':
+                del tr[1]
+            if data[i][j + 1] == '1':
+                del tr[0]
+            #print('up')
+        elif enemy1.rect.right >= w.rect.left and enemy1.rect.right <= w.rect.left + 7:
             if enemy1.rect.bottom > w.rect.top:
-                enemy1.speed[0] *= -1
+                #enemy1.speed[0] *= -1
                 enemy1.rect.right = w.rect.left - 10
-                enemy1.image = enemy_im_r
-                #print('left')
-                break
+                if data[i - 1][j] == '1':
+                    del tr[3]
+                if data[i + 1][j] == '1':
+                    del tr[2]
+                del tr[0]
+                # print('right')
         elif enemy1.rect.left <= w.rect.right and enemy1.rect.left >= w.rect.right - 7:
-            enemy1.speed[0] *= -1
+            #enemy1.speed[0] *= -1
             enemy1.rect.left = w.rect.right + 10
+            if data[i - 1][j] == '1':
+                del tr[3]
+            if data[i + 1][j] == '1':
+                del tr[2]
+            del tr[1]
+            # print('left')
+        y = random.choice(tr)
+        #print(tr)
+        #print(y)
+        if y == 0:
+            enemy1.speed = [enemy_speed, 0]
             enemy1.image = enemy_im_l
-            #print('right')
-            break
+        elif y == 1:
+            enemy1.speed = [-enemy_speed, 0]
+            enemy1.image = enemy_im_r
+        elif y == 2:
+            enemy1.speed = [0, enemy_speed]
+        else:
+            enemy1.speed = [0, -enemy_speed]
+        break
 
+    #if len(enemy_and_walls_hit_list) > 0:
+    #    x = enemy1.speed
+    #    while enemy1.speed == x:
+    #        y = random.randint(0, 3)
+    #        if y == 0:
+    #            enemy1.speed = [enemy_speed, 0]
+    #        elif y == 1:
+    #            enemy1.speed = [-enemy_speed, 0]
+    #        elif y == 2:
+    #            enemy1.speed = [0, enemy_speed]
+    #        else:
+    #            enemy1.speed = [0, -enemy_speed]
 
     if pygame.sprite.collide_rect(player, door1):
         if key.check_used:
@@ -256,6 +305,8 @@ def check_items_exists2(*it):
             i.check_used = True
 
 def check_collide2(enemy_im_l, enemy_im_r):
+    f = open('field2.txt', 'r')
+    data = f.readlines()
     pygame.sprite.spritecollide(player, items2, True)
     player_and_walls_hit_list = pygame.sprite.spritecollide(player, walls2,False)
     enemy_and_walls_hit_list = pygame.sprite.spritecollide(enemy2, walls2, False)
@@ -271,33 +322,63 @@ def check_collide2(enemy_im_l, enemy_im_r):
         elif player.rect.left <= w.rect.right and player.rect.left >= w.rect.right - 15:
             player.rect.left = w.rect.right
 
-
     for w in enemy_and_walls_hit_list:
-        print(enemy2.rect.bottom, enemy2.rect.top)
+        tr = [0, 1, 2, 3]
+        j = enemy2.rect.x // 50 + 1
+        i = enemy2.rect.y // 50 + 1
+        print(i, j)
         if enemy2.rect.bottom >= w.rect.top and enemy2.rect.bottom <= w.rect.top + 7:
             if enemy2.rect.right > w.rect.left:
-                enemy2.speed[1] *= -1
+                # enemy2.speed[1] *= -1
                 enemy2.rect.bottom = w.rect.top - 10
-                #print('up')
-                break
+                del tr[2]
+                if data[i][j - 1] == '1':
+                    del tr[1]
+                if data[i][j + 1] == '1':
+                    del tr[0]
+                print('down')
         elif enemy2.rect.top <= w.rect.bottom and enemy2.rect.top >= w.rect.bottom - 7:
-            enemy2.speed[1] *= -1
+            # enemy2.speed[1] *= -1
             enemy2.rect.top = w.rect.bottom + 10
-            #print('down')
-            break
-        if enemy2.rect.right >= w.rect.left and enemy2.rect.right <= w.rect.left + 7:
+            del tr[3]
+            if data[i][j - 1] == '1':
+                del tr[1]
+            if data[i][j + 1] == '1':
+                del tr[0]
+            print('up')
+        elif enemy2.rect.right >= w.rect.left and enemy2.rect.right <= w.rect.left + 7:
             if enemy2.rect.bottom > w.rect.top:
-                enemy2.speed[0] *= -1
+                # enemy2.speed[0] *= -1
                 enemy2.rect.right = w.rect.left - 10
-                enemy2.image = enemy_im_r
-                #print('left')
-                break
+                if data[i - 1][j] == '1':
+                    del tr[3]
+                if data[i + 1][j] == '1':
+                    del tr[2]
+                del tr[0]
+                print('right')
         elif enemy2.rect.left <= w.rect.right and enemy2.rect.left >= w.rect.right - 7:
-            enemy2.speed[0] *= -1
+            # enemy2.speed[0] *= -1
             enemy2.rect.left = w.rect.right + 10
+            if data[i - 1][j] == '1':
+                del tr[3]
+            if data[i + 1][j] == '1':
+                del tr[2]
+            del tr[1]
+            print('left')
+        y = random.choice(tr)
+        print(tr)
+        print(y)
+        if y == 0:
+            enemy2.speed = [enemy_speed, 0]
             enemy2.image = enemy_im_l
-            #print('right')
-            break
+        elif y == 1:
+            enemy2.speed = [-enemy_speed, 0]
+            enemy2.image = enemy_im_r
+        elif y == 2:
+            enemy2.speed = [0, enemy_speed]
+        else:
+            enemy2.speed = [0, -enemy_speed]
+        break
 
 
     if pygame.sprite.collide_rect(player, door2):
@@ -340,8 +421,13 @@ def logo():
                 gameover = True
             if event.type == pygame.QUIT:
                 sys.exit()
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_SPACE:
+                    channel0.stop()
+                    channel1.stop()
+                    room1()
         u = pygame.time.get_ticks()
-        if  6500 < u < 6750:
+        if 6500 < u < 6750:
             channel0.play(music_gachi_logo)
         screen.blit(image_logo, (625, 300))
         pygame.display.flip()
