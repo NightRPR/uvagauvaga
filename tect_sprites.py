@@ -34,15 +34,21 @@ image_key = pygame.transform.scale(image_key, (image_key.get_width() // 4, image
 image_coin = pygame.image.load('coin.png')
 image_coin = pygame.transform.scale(image_coin, (image_coin.get_width() // 10, image_coin.get_height() // 10))
 image_wall = pygame.image.load("wall.png")
+
+
 image_wall = pygame.transform.scale(image_wall, (image_wall.get_width() // 1, image_wall.get_height() // 1))
 image_door = pygame.image.load("door.png")
 image_door = pygame.transform.scale(image_door, (image_door.get_width() // 4, image_door.get_height() // 4))
 
-bg1 = pygame.image.load("room1_back.png")
+bg1 = pygame.image.load("pol1.png")
 bg1 = pygame.transform.scale(bg1, (bg1.get_width() // 1, bg1.get_height() // 1))
 
 music_logo = pygame.mixer.Sound('volvo.mp3')
 music_gachi_logo = pygame.mixer.Sound('Oh yes sir.mp3')
+music_door_open = pygame.mixer.Sound('door.mp3')
+music_room1 = pygame.mixer.Sound('rooms.mp3')
+music_room2 = pygame.mixer.Sound('dungeon.mp3')
+music_items = pygame.mixer.Sound('Dungeon master.mp3')
 
 
 class Pers(pygame.sprite.Sprite):
@@ -189,7 +195,11 @@ def check_items_exists1(*it):
 def check_collide1(enemy_im_l, enemy_im_r):
     f = open('field1.txt', 'r')
     data = f.readlines()
-    pygame.sprite.spritecollide(player, items1, True)
+    u = pygame.sprite.spritecollide(player, items1, True)
+    if u:
+        channel1 = pygame.mixer.Channel(1)
+        channel1.play(music_items)
+
     player_and_walls_hit_list = pygame.sprite.spritecollide(player, walls1, False)
     enemy_and_walls_hit_list = pygame.sprite.spritecollide(enemy1, walls1, False)
     for w in player_and_walls_hit_list:
@@ -278,6 +288,8 @@ def check_collide1(enemy_im_l, enemy_im_r):
 
     if pygame.sprite.collide_rect(player, door1):
         if key.check_used:
+            channel1 = pygame.mixer.Channel(1)
+            channel1.play(music_door_open)
             room2()
         else:
             if player.rect.bottom >= door1.rect.top and player.rect.bottom <= door1.rect.top + 15:
@@ -292,7 +304,7 @@ def check_collide1(enemy_im_l, enemy_im_r):
                 player.rect.left = door1.rect.right
 
 def draw_all1(screen):
-    screen.blit(bg1, (0, 0))
+    screen.blit(bg1.convert(), (0, 0))
     screen.blit(player.image, player.rect)
     doors1.draw(screen)
     items1.draw(screen)
@@ -307,7 +319,10 @@ def check_items_exists2(*it):
 def check_collide2(enemy_im_l, enemy_im_r):
     f = open('field2.txt', 'r')
     data = f.readlines()
-    pygame.sprite.spritecollide(player, items2, True)
+    u = pygame.sprite.spritecollide(player, items2, True)
+    if u:
+        channel1 = pygame.mixer.Channel(1)
+        channel1.play(music_items)
     player_and_walls_hit_list = pygame.sprite.spritecollide(player, walls2,False)
     enemy_and_walls_hit_list = pygame.sprite.spritecollide(enemy2, walls2, False)
     for w in player_and_walls_hit_list:
@@ -397,7 +412,7 @@ def check_collide2(enemy_im_l, enemy_im_r):
                 player.rect.left = door2.rect.right
 
 def draw_all2(screen):
-    screen.blit(bg1, (0, 0))
+    screen.blit(bg1.convert(), (0, 0))
     screen.blit(player.image, player.rect)
     doors2.draw(screen)
     items2.draw(screen)
@@ -440,7 +455,8 @@ def room1():
     # Считываем поле
     read_field1()
     screen = pygame.display.set_mode((WIDTH, HEIGHT))
-
+    channel0 = pygame.mixer.Channel(0)
+    channel0.play(music_room1)
     while 1:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -483,6 +499,8 @@ def room1():
 
 
 def room2():
+    channel0 = pygame.mixer.Channel(0)
+    channel0.play(music_room2)
     #Считываем поле
     read_field2()
     screen = pygame.display.set_mode((WIDTH, HEIGHT))
