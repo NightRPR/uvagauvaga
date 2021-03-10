@@ -7,6 +7,7 @@ pygame.font.init()
 
 WIDTH = 1500
 HEIGHT = 900
+size = WIDTH, HEIGHT
 white = (255, 255, 255)
 black = (0, 0, 0)
 player_speed = 7
@@ -50,6 +51,25 @@ music_room1 = pygame.mixer.Sound('rooms.mp3')
 music_room2 = pygame.mixer.Sound('dungeon.mp3')
 music_items = pygame.mixer.Sound('Dungeon master.mp3')
 
+class Button:
+    def __init__(self, x=None, y=None, wdth=None, hght=None, color = (0, 0, 0), border = 0, font = 'Calibri', text_size = 50, text = None):
+        self.color = color
+        self.x = x
+        self.y = y
+        self.width = wdth
+        self.height = hght
+        self.font = font
+        self.text_size = text_size
+        self.text = text
+        self.border = border
+
+    def process_draw(self, screen):
+        pygame.font.init()
+        pygame.draw.rect(screen, self.color, (self.x, self.y, self.width, self.height), self.border)
+        font = pygame.font.SysFont(self.font, self.text_size, True)
+        data = self.text
+        ts = font.render(data, False, black)
+        screen.blit(ts, (self.x - 1, self.y))
 
 class Pers(pygame.sprite.Sprite):
     def __init__(self, x, y, filename):
@@ -59,6 +79,7 @@ class Pers(pygame.sprite.Sprite):
         self.rect.x = x
         self.rect.y = y
         self.speed = [0, 0]
+
 
     def update(self):
         if self.rect.right > WIDTH:
@@ -125,7 +146,7 @@ class Door(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.x = x
         self.rect.y = y
-        
+
 def read_field1():
     f = open('field1.txt', 'r')
     data = f.readlines()
@@ -419,10 +440,75 @@ def draw_all2(screen):
     walls2.draw(screen)
     enemies2.draw(screen)
 
+def Pause():
+    pygame.init()
+    pygame.mixer.init()
+    pygame.mixer.music.load('Not_mario.mp3')
+    pygame.mixer.music.play()
+    screen = pygame.display.set_mode(size)
+    gameover = False
+    continue_button = Button(WIDTH - 400, 150, 276, 50, (218, 247, 166), 0, 'Calibri', 50, '    continue')
+    restart_button = Button(WIDTH - 400, 205, 276, 50, (255, 87, 51), 0, 'Calibri', 50, '      restart')
+    quit_button = Button(WIDTH - 400, 260, 276, 50, (144, 12, 63), 0, 'Calibri', 50, '        quit')
+    while not gameover:
+        for event in pygame.event.get():
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                x, y = event.pos
+                if x >= continue_button.x and x <= continue_button.x + continue_button.width and y >= continue_button.y and y <= continue_button.y + continue_button.height:
+                    gameover = True
+                    pygame.mixer.music.stop()
+                    pygame.mixer.music.load('zvon.mp3')
+                    pygame.mixer.music.play()
+                    pygame.time.delay(600)
+                elif x >= restart_button.x and x <= restart_button.x + restart_button.width and y >= restart_button.y and y <= restart_button.y + restart_button.height:
+                    gameover = True
+                    enemy1.check_allive = True
+                    enemy2.check_allive = True
+                    key.check_used = False
+                    coin.check_used = False
+                    room1()
+                    sys.exit()
+                elif x >= quit_button.x and x <= quit_button.x + quit_button.width and y >= quit_button.y and y <= quit_button.y + quit_button.height:
+                    gameover = True
+                    sys.exit()
+            elif event.type == pygame.MOUSEMOTION:
+                x, y = event.pos
+                if x >= continue_button.x and x <= continue_button.x + continue_button.width and y >= continue_button.y and y <= continue_button.y + continue_button.height:
+                    continue_button.border = 5
+                    continue_button.process_draw(screen)
+                else:
+                    continue_button.border = 0
+                    continue_button.process_draw(screen)
+
+                if x >= restart_button.x and x <= restart_button.x + restart_button.width and y >= restart_button.y and y <= restart_button.y + restart_button.height:
+                    restart_button.border = 5
+                    restart_button.process_draw(screen)
+                else:
+                    restart_button.border = 0
+                    restart_button.process_draw(screen)
+
+                if x >= quit_button.x and x <= quit_button.x + quit_button.width and y >= quit_button.y and y <= quit_button.y + quit_button.height:
+                    quit_button.border = 5
+                    quit_button.process_draw(screen)
+                else:
+                    quit_button.border = 0
+                    quit_button.process_draw(screen)
+
+            if event.type == pygame.QUIT:
+                gameover = True
+                sys.exit()
+
+            screen.blit(bg1, (0, 0))
+            restart_button.process_draw(screen)
+            continue_button.process_draw(screen)
+            quit_button.process_draw(screen)
+            pygame.display.flip()
+            pygame.time.wait(10)
+
 def logo():
+    pygame.init()
     screen = pygame.display.set_mode((WIDTH, HEIGHT))
     pygame.time.set_timer(pygame.USEREVENT, 8000)
-    pygame.init()
     gameover = False
     channel1 = pygame.mixer.Channel(1)
     channel0 = pygame.mixer.Channel(0)
@@ -472,6 +558,8 @@ def room1():
                     player.speed[1] = -player_speed
                 elif event.key == pygame.K_s:
                     player.speed[1] = player_speed
+                elif event.key == pygame.K_SPACE:
+                    Pause()
             elif event.type == pygame.KEYUP:
                 if event.key == pygame.K_a and player.speed[0] == -player_speed:
                     player.speed[0] = 0
@@ -520,6 +608,8 @@ def room2():
                     player.speed[1] = -player_speed
                 elif event.key == pygame.K_s:
                     player.speed[1] = player_speed
+                elif event.key == pygame.K_SPACE:
+                    Pause()
             elif event.type == pygame.KEYUP:
                 if event.key == pygame.K_a and player.speed[0] == -player_speed:
                     player.speed[0] = 0
@@ -547,3 +637,6 @@ def room2():
 
 if __name__ == '__main__':
     logo()
+
+
+
