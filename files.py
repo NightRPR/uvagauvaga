@@ -23,6 +23,7 @@ image_mob2_left = pygame.image.load("mob2_left.png")
 image_mob2_left = pygame.transform.scale(image_mob2_left, (image_mob2_left.get_width() // 7, image_mob2_left.get_height() // 7))
 image_logo = pygame.image.load("pooj.jpg")
 image_logo = pygame.transform.scale(image_logo, (image_logo.get_width() // 3, image_logo.get_height() // 3))
+image_pause = pygame.image.load('pause_bg.png')
 
 image_key = pygame.image.load('key.png')
 image_key = pygame.transform.scale(image_key, (image_key.get_width() // 4, image_key.get_height() // 4))

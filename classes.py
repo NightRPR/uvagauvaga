@@ -79,3 +79,23 @@ class Door(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.x = x
         self.rect.y = y
+
+class Button:
+    def __init__(self, x=None, y=None, wdth=None, hght=None, color = (0, 0, 0), border = 0, font = 'Calibri', text_size = 50, text = None):
+        self.color = color
+        self.x = x
+        self.y = y
+        self.width = wdth
+        self.height = hght
+        self.font = font
+        self.text_size = text_size
+        self.text = text
+        self.border = border
+
+    def process_draw(self, screen):
+        pygame.font.init()
+        pygame.draw.rect(screen, self.color, (self.x, self.y, self.width, self.height), self.border)
+        font = pygame.font.SysFont(self.font, self.text_size, True)
+        data = self.text
+        ts = font.render(data, False, black)
+        screen.blit(ts, (self.x - 1, self.y))
