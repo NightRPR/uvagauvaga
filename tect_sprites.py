@@ -36,13 +36,14 @@ image_coin = pygame.image.load('coin.png')
 image_coin = pygame.transform.scale(image_coin, (image_coin.get_width() // 10, image_coin.get_height() // 10))
 image_wall = pygame.image.load("wall.png")
 
-
 image_wall = pygame.transform.scale(image_wall, (image_wall.get_width() // 1, image_wall.get_height() // 1))
 image_door = pygame.image.load("door.png")
 image_door = pygame.transform.scale(image_door, (image_door.get_width() // 4, image_door.get_height() // 4))
 
 bg1 = pygame.image.load("pol1.png")
 bg1 = pygame.transform.scale(bg1, (bg1.get_width() // 1, bg1.get_height() // 1))
+image_menu = pygame.image.load("pol1.png")
+image_menu = pygame.transform.scale(bg1, (bg1.get_width() // 1, bg1.get_height() // 1))
 
 music_logo = pygame.mixer.Sound('volvo.mp3')
 music_gachi_logo = pygame.mixer.Sound('Oh yes sir.mp3')
@@ -70,6 +71,54 @@ class Button:
         data = self.text
         ts = font.render(data, False, black)
         screen.blit(ts, (self.x - 1, self.y))
+
+def menu():
+    pygame.init()
+    pygame.mixer.music.load('just_test.mp3')
+    pygame.mixer.music.play()
+    screen = pygame.display.set_mode(size)
+    gameover = False
+
+    start_button = Button(WIDTH - 400, 150, 276, 50, (218, 247, 166), 0, 'Calibri', 50, '         play')
+    quit_button = Button(WIDTH - 400, 205, 276, 50, (255, 87, 51), 0, 'Calibri', 50, '        quit')
+    while not gameover:
+        for event in pygame.event.get():
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                x, y = event.pos
+                if x >= start_button.x and x <= start_button.x + start_button.width and y >= start_button.y and y <= start_button.y + start_button.height:
+                    gameover = True
+                    pygame.mixer.music.stop()
+                    pygame.mixer.music.load('zvon.mp3')
+                    pygame.mixer.music.play()
+                    pygame.time.delay(600)
+                    room1()
+                elif x >= quit_button.x and x <= quit_button.x + quit_button.width and y >= quit_button.y and y <= quit_button.y + quit_button.height:
+                    gameover = True
+                    sys.exit()
+            elif event.type == pygame.MOUSEMOTION:
+                x, y = event.pos
+                if x >= start_button.x and x <= start_button.x + start_button.width and y >= start_button.y and y <= start_button.y + start_button.height:
+                    start_button.border = 5
+                    start_button.process_draw(screen)
+                else:
+                    start_button.border = 0
+                    start_button.process_draw(screen)
+                if x >= quit_button.x and x <= quit_button.x + quit_button.width and y >= quit_button.y and y <= quit_button.y + quit_button.height:
+                    quit_button.border = 5
+                    quit_button.process_draw(screen)
+                else:
+                    quit_button.border = 0
+                    quit_button.process_draw(screen)
+            if event.type == pygame.QUIT:
+                gameover = True
+            screen.fill(white)
+            screen.blit(image_menu, (0, 0))
+            start_button.process_draw(screen)
+            quit_button.process_draw(screen)
+            pygame.display.flip()
+            pygame.time.wait(10)
+    sys.exit()
+
 
 class Pers(pygame.sprite.Sprite):
     def __init__(self, x, y, filename):
@@ -466,6 +515,10 @@ def Pause():
                     enemy2.check_allive = True
                     key.check_used = False
                     coin.check_used = False
+                    pygame.mixer.music.stop()
+                    pygame.mixer.music.load('zvon.mp3')
+                    pygame.mixer.music.play()
+                    pygame.time.delay(600)
                     room1()
                     sys.exit()
                 elif x >= quit_button.x and x <= quit_button.x + quit_button.width and y >= quit_button.y and y <= quit_button.y + quit_button.height:
@@ -526,14 +579,14 @@ def logo():
                 if event.key == pygame.K_SPACE:
                     channel0.stop()
                     channel1.stop()
-                    room1()
+                    menu()
         u = pygame.time.get_ticks()
         if 6500 < u < 6750:
             channel0.play(music_gachi_logo)
         screen.blit(image_logo, (625, 300))
         pygame.display.flip()
         pygame.time.wait(10)
-    room1()
+    menu()
 
 
 
@@ -637,6 +690,5 @@ def room2():
 
 if __name__ == '__main__':
     logo()
-
 
 
