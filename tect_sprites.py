@@ -358,8 +358,8 @@ def draw_all1(screen):
     doors1.draw(screen)
     items1.draw(screen)
     walls1.draw(screen)
-    #if enemy1.check_allive == True:
-    enemies1.draw(screen)
+    if enemy1.check_allive == True:
+        enemies1.draw(screen)
 
 def check_items_exists2(*it):
     for i in it:
@@ -497,21 +497,17 @@ def Pause():
                 x, y = event.pos
                 if continue_button.x <= x <= continue_button.x + continue_button.width and continue_button.y <= y <= continue_button.y + continue_button.height:
                     gameover = True
-                    pygame.mixer.music.stop()
-                    pygame.mixer.music.load('zvon.mp3')
-                    pygame.mixer.music.play()
                     channel0.unpause()
-                    pygame.time.delay(600)
                 elif restart_button.x <= x <= restart_button.x + restart_button.width and restart_button.y <= y <= restart_button.y + restart_button.height:
                     gameover = True
                     enemy1.check_allive = True
                     enemy2.check_allive = True
                     key.check_used = False
                     coin.check_used = False
-                    pygame.mixer.music.stop()
-                    pygame.mixer.music.load('zvon.mp3')
-                    pygame.mixer.music.play()
-                    pygame.time.delay(600)
+                    enemies1.add(enemy1)
+                    enemies2.add(enemy2)
+                    items1.add(key)
+                    items2.add(coin)
                     room1()
                     sys.exit()
                 elif quit_button.x <= x <= quit_button.x + quit_button.width and quit_button.y <= y <= quit_button.y + quit_button.height:
@@ -731,6 +727,10 @@ def game_over():
     restart_button = Button((WIDTH // 2) - 75, (HEIGHT // 2) - 25, 150, 50, (255, 0, 0), 0, 'Calibri', 50, 'Заново')
     enemy1.check_allive = True
     enemy2.check_allive = True
+    enemies1.add(enemy1)
+    enemies2.add(enemy2)
+    items1.add(key)
+    items2.add(coin)
     player.speed = [0, 0]
 
     while not gameover:
@@ -768,6 +768,10 @@ def win():
     restart_button = Button((WIDTH // 2) - 95, (HEIGHT // 2) + 25, 160, 50, (0, 0, 255), 0, 'Calibri', 50, 'Заново')
     enemy1.check_allive = True
     enemy2.check_allive = True
+    enemies1.add(enemy1)
+    enemies2.add(enemy2)
+    items1.add(key)
+    items2.add(coin)
     player.speed = [0, 0]
 
     while not gameover:
