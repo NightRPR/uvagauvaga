@@ -5,6 +5,7 @@ import random
 pygame.mixer.init()
 pygame.font.init()
 channel0 = pygame.mixer.Channel(0)
+channel1 = pygame.mixer.Channel(1)
 
 image_pers_right = pygame.image.load("gg_right.png")
 image_pers_right = pygame.transform.scale(image_pers_right, (image_pers_right.get_width() // 13, image_pers_right.get_height() // 13))
@@ -48,6 +49,8 @@ music_room1 = pygame.mixer.Sound('rooms.mp3')
 music_room1.set_volume(0.6)
 music_room2 = pygame.mixer.Sound('dungeon.mp3')
 music_items = pygame.mixer.Sound('Dungeon master.mp3')
+music_fight = pygame.mixer.Sound('fight.mp3')
+music_fight.set_volume(0.5)
 
 class Pers(pygame.sprite.Sprite):
     def __init__(self, x, y, filename):
@@ -487,7 +490,7 @@ def Pause():
     continue_button = Button(WIDTH - 400, 150, 276, 50, (218, 247, 166), 0, 'Calibri', 50, '    continue')
     restart_button = Button(WIDTH - 400, 205, 276, 50, (255, 87, 51), 0, 'Calibri', 50, '      restart')
     quit_button = Button(WIDTH - 400, 260, 276, 50, (144, 12, 63), 0, 'Calibri', 50, '        quit')
-    pygame.mouse.set_cursor(*pygame.cursors.load_xbm('wcurs.xbm', 'wcurs.xbm'))
+    pygame.mouse.set_cursor(*pygame.cursors.load_xbm('pcur.xbm', 'pcur.xbm'))
     player.speed = [0, 0]
 
     while not gameover:
@@ -498,6 +501,7 @@ def Pause():
                 if continue_button.x <= x <= continue_button.x + continue_button.width and continue_button.y <= y <= continue_button.y + continue_button.height:
                     gameover = True
                     channel0.unpause()
+                    pygame.mixer.music.stop()
                 elif restart_button.x <= x <= restart_button.x + restart_button.width and restart_button.y <= y <= restart_button.y + restart_button.height:
                     gameover = True
                     enemy1.check_allive = True
@@ -508,6 +512,7 @@ def Pause():
                     enemies2.add(enemy2)
                     items1.add(key)
                     items2.add(coin)
+                    pygame.mixer.music.stop()
                     room1()
                     sys.exit()
                 elif quit_button.x <= x <= quit_button.x + quit_button.width and quit_button.y <= y <= quit_button.y + quit_button.height:
@@ -679,9 +684,10 @@ def room2():
         pygame.time.delay(10)
 
 def fight():
+    channel0.pause()
+    channel1.play(music_fight)
     pygame.mouse.set_cursor(*pygame.cursors.broken_x)
     a = pygame.mixer.music.get_pos()
-    pygame.mixer.music.stop()
     screen = pygame.display.set_mode((WIDTH, HEIGHT))
     pygame.time.set_timer(pygame.USEREVENT, 5000)
     gameover = False
@@ -689,7 +695,6 @@ def fight():
     cnt = 0
     target = Target(WIDTH // 2, HEIGHT // 2)
     pygame.mouse.set_visible(True)
-
     while not gameover:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -705,6 +710,8 @@ def fight():
             if cnt >= 5:
                 check = True
                 gameover = True
+                channel1.stop()
+                channel0.unpause()
             if event.type == pygame.USEREVENT:
                 gameover = True
         screen.fill(black)
@@ -717,9 +724,12 @@ def fight():
     return check
 
 def game_over():
+    channel1.stop()
     screen = pygame.display.set_mode(size)
     gameover = False
-    pygame.mixer.music.load('lose.mp3')
+    channel0.pause()
+    pygame.mouse.set_cursor(*pygame.cursors.diamond)
+    pygame.mixer.music.load('lol.mp3')
     pygame.mixer.music.play()
     key.check_used = 0
     coin.check_used = 0
@@ -740,6 +750,7 @@ def game_over():
                 if x >= exit_button.x and x <= exit_button.x + exit_button.width and y >= exit_button.y and y <= exit_button.y + exit_button.height:
                     gameover = True
                 elif x >= restart_button.x and x <= restart_button.x + restart_button.width and y >= restart_button.y and y <= restart_button.y + restart_button.height:
+                    pygame.mixer.music.stop()
                     room1()
             exit_button.check_motion(screen, event, (255, 0, 0))
             restart_button.check_motion(screen, event, (255, 0, 0))
@@ -755,7 +766,10 @@ def game_over():
     sys.exit()
 
 def win():
-    pygame.mouse.set_cursor(*pygame.cursors.broken_x)
+    channel1.stop()
+    pygame.mouse.set_visible(True)
+    pygame.mouse.set_cursor(*pygame.cursors.load_xbm('wcur.xbm', 'wcur.xbm'))
+    channel0.stop()
     pygame.init()
     pygame.mixer.init()
     pygame.mixer.music.load('win.mp3')
@@ -793,7 +807,6 @@ def win():
             pygame.display.flip()
             pygame.time.wait(10)
     sys.exit()
-
     room2()
 if __name__ == '__main__':
     logo()
