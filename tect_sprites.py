@@ -8,17 +8,23 @@ channel0 = pygame.mixer.Channel(0)
 channel1 = pygame.mixer.Channel(1)
 
 image_pers_right = pygame.image.load("gg_right.png")
-image_pers_right = pygame.transform.scale(image_pers_right, (image_pers_right.get_width() // 13, image_pers_right.get_height() // 13))
+image_pers_right = pygame.transform.scale(image_pers_right,
+                                          (image_pers_right.get_width() // 13, image_pers_right.get_height() // 13))
 image_pers_left = pygame.image.load("gg_left.png")
-image_pers_left = pygame.transform.scale(image_pers_left, (image_pers_left.get_width() // 13, image_pers_left.get_height() // 13))
+image_pers_left = pygame.transform.scale(image_pers_left,
+                                         (image_pers_left.get_width() // 13, image_pers_left.get_height() // 13))
 image_mob1_right = pygame.image.load("mob1_right.png")
-image_mob1_right = pygame.transform.scale(image_mob1_right, (image_mob1_right.get_width() // 6, image_mob1_right.get_height() // 6))
+image_mob1_right = pygame.transform.scale(image_mob1_right,
+                                          (image_mob1_right.get_width() // 6, image_mob1_right.get_height() // 6))
 image_mob1_left = pygame.image.load("mob1_left.png")
-image_mob1_left = pygame.transform.scale(image_mob1_left, (image_mob1_left.get_width() // 6, image_mob1_left.get_height() // 6))
+image_mob1_left = pygame.transform.scale(image_mob1_left,
+                                         (image_mob1_left.get_width() // 6, image_mob1_left.get_height() // 6))
 image_mob2_right = pygame.image.load("mob2_right.png")
-image_mob2_right = pygame.transform.scale(image_mob2_right, (image_mob2_right.get_width() // 7, image_mob2_right.get_height() // 7))
+image_mob2_right = pygame.transform.scale(image_mob2_right,
+                                          (image_mob2_right.get_width() // 7, image_mob2_right.get_height() // 7))
 image_mob2_left = pygame.image.load("mob2_left.png")
-image_mob2_left = pygame.transform.scale(image_mob2_left, (image_mob2_left.get_width() // 7, image_mob2_left.get_height() // 7))
+image_mob2_left = pygame.transform.scale(image_mob2_left,
+                                         (image_mob2_left.get_width() // 7, image_mob2_left.get_height() // 7))
 image_logo = pygame.image.load("pooj.jpg")
 image_logo = pygame.transform.scale(image_logo, (image_logo.get_width() // 3, image_logo.get_height() // 3))
 image_pause = pygame.image.load('pause_bg.png')
@@ -52,6 +58,7 @@ music_items = pygame.mixer.Sound('Dungeon master.mp3')
 music_fight = pygame.mixer.Sound('fight.mp3')
 music_fight.set_volume(0.5)
 
+
 class Pers(pygame.sprite.Sprite):
     def __init__(self, x, y, filename):
         pygame.sprite.Sprite.__init__(self)
@@ -81,6 +88,7 @@ class Pers(pygame.sprite.Sprite):
             self.rect.x += self.speed[0]
             self.rect.y += self.speed[1]
 
+
 class Enemy(pygame.sprite.Sprite):
     def __init__(self, x, y, filename):
         pygame.sprite.Sprite.__init__(self)
@@ -103,6 +111,7 @@ class Enemy(pygame.sprite.Sprite):
         self.rect.x += self.speed[0]
         self.rect.y += self.speed[1]
 
+
 class Item(pygame.sprite.Sprite):
     def __init__(self, x, y, filename):
         pygame.sprite.Sprite.__init__(self)
@@ -112,6 +121,7 @@ class Item(pygame.sprite.Sprite):
         self.rect.y = y
         self.check_used = False
 
+
 class Wall(pygame.sprite.Sprite):
     def __init__(self, x, y, filename):
         pygame.sprite.Sprite.__init__(self)
@@ -119,6 +129,7 @@ class Wall(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.x = x
         self.rect.y = y
+
 
 class Door(pygame.sprite.Sprite):
     def __init__(self, x, y, filename):
@@ -128,8 +139,10 @@ class Door(pygame.sprite.Sprite):
         self.rect.x = x
         self.rect.y = y
 
+
 class Button:
-    def __init__(self, x=None, y=None, wdth=None, hght=None, color = (0, 0, 0), border = 0, font = 'Calibri', text_size = 50, text = None):
+    def __init__(self, x=None, y=None, wdth=None, hght=None, color=(0, 0, 0), border=0, font='Calibri', text_size=50,
+                 text=None):
         self.color = color
         self.x = x
         self.y = y
@@ -163,8 +176,9 @@ class Button:
         ts = font.render(data, False, black)
         screen.blit(ts, (self.x - 1, self.y))
 
+
 class Target:
-    def __init__(self, x=None, y=None, color = (255, 0, 0), R = 50):
+    def __init__(self, x=None, y=None, color=(255, 0, 0), R=50):
         self.color = color
         self.x = x
         self.y = y
@@ -182,6 +196,7 @@ black = (0, 0, 0)
 player_speed = 8
 enemy_speed = 7
 cell_size = 50
+
 
 def read_field1():
     f = open('field1.txt', 'r')
@@ -202,6 +217,7 @@ def read_field1():
             if data[i][j] == 'd':
                 door1.rect.x, door1.rect.y = j * cell_size, i * cell_size
 
+
 def read_field2():
     f = open('field2.txt', 'r')
     data = f.readlines()
@@ -220,6 +236,7 @@ def read_field2():
                 enemy2.rect.x, enemy2.rect.y = j * cell_size, i * cell_size
             if data[i][j] == 'd':
                 door2.rect.x, door2.rect.y = j * cell_size, i * cell_size
+
 
 key = Item(0, 0, image_key)
 coin = Item(0, 0, image_coin)
@@ -244,10 +261,12 @@ enemies1.add(enemy1)
 enemies2 = pygame.sprite.Group()
 enemies2.add(enemy2)
 
+
 def check_items_exists1(*it):
     for i in it:
         if i not in items1:
             i.check_used = True
+
 
 def check_collide1(enemy_im_l, enemy_im_r):
     f = open('field1.txt', 'r')
@@ -272,34 +291,33 @@ def check_collide1(enemy_im_l, enemy_im_r):
         elif player.rect.left <= w.rect.right and player.rect.left >= w.rect.right - 15:
             player.rect.left = w.rect.right
 
-
     for w in enemy_and_walls_hit_list:
         tr = [0, 1, 2, 3]
-        j = enemy1.rect.x// 50 + 1
+        j = enemy1.rect.x // 50 + 1
         i = enemy1.rect.y // 50 + 1
-        print(i, j)
+        #print(i, j)
         if enemy1.rect.bottom >= w.rect.top and enemy1.rect.bottom <= w.rect.top + 7:
             if enemy1.rect.right > w.rect.left:
-                #enemy1.speed[1] *= -1
+                # enemy1.speed[1] *= -1
                 enemy1.rect.bottom = w.rect.top - 10
                 del tr[2]
                 if data[i][j - 1] == '1':
                     del tr[1]
                 if data[i][j + 1] == '1':
                     del tr[0]
-                #print('down')
+                # print('down')
         elif enemy1.rect.top <= w.rect.bottom and enemy1.rect.top >= w.rect.bottom - 7:
-            #enemy1.speed[1] *= -1
+            # enemy1.speed[1] *= -1
             enemy1.rect.top = w.rect.bottom + 10
             del tr[3]
             if data[i][j - 1] == '1':
                 del tr[1]
             if data[i][j + 1] == '1':
                 del tr[0]
-            #print('up')
+            # print('up')
         elif enemy1.rect.right >= w.rect.left and enemy1.rect.right <= w.rect.left + 7:
             if enemy1.rect.bottom > w.rect.top:
-                #enemy1.speed[0] *= -1
+                # enemy1.speed[0] *= -1
                 enemy1.rect.right = w.rect.left - 10
                 if data[i - 1][j] == '1':
                     del tr[3]
@@ -308,7 +326,7 @@ def check_collide1(enemy_im_l, enemy_im_r):
                 del tr[0]
                 # print('right')
         elif enemy1.rect.left <= w.rect.right and enemy1.rect.left >= w.rect.right - 7:
-            #enemy1.speed[0] *= -1
+            # enemy1.speed[0] *= -1
             enemy1.rect.left = w.rect.right + 10
             if data[i - 1][j] == '1':
                 del tr[3]
@@ -317,8 +335,8 @@ def check_collide1(enemy_im_l, enemy_im_r):
             del tr[1]
             # print('left')
         y = random.choice(tr)
-        #print(tr)
-        #print(y)
+        # print(tr)
+        # print(y)
         if y == 0:
             enemy1.speed = [enemy_speed, 0]
             enemy1.image = enemy_im_l
@@ -355,6 +373,7 @@ def check_collide1(enemy_im_l, enemy_im_r):
             else:
                 game_over()
 
+
 def draw_all1(screen):
     screen.blit(bg1.convert(), (0, 0))
     screen.blit(player.image, player.rect)
@@ -364,10 +383,12 @@ def draw_all1(screen):
     if enemy1.check_allive == True:
         enemies1.draw(screen)
 
+
 def check_items_exists2(*it):
     for i in it:
         if i not in items2:
             i.check_used = True
+
 
 def check_collide2(enemy_im_l, enemy_im_r):
     f = open('field2.txt', 'r')
@@ -377,7 +398,7 @@ def check_collide2(enemy_im_l, enemy_im_r):
     if u:
         channel1 = pygame.mixer.Channel(1)
         channel1.play(music_items)
-    player_and_walls_hit_list = pygame.sprite.spritecollide(player, walls2,False)
+    player_and_walls_hit_list = pygame.sprite.spritecollide(player, walls2, False)
     enemy_and_walls_hit_list = pygame.sprite.spritecollide(enemy2, walls2, False)
     for w in player_and_walls_hit_list:
         if player.rect.bottom >= w.rect.top and player.rect.bottom <= w.rect.top + 15:
@@ -395,7 +416,7 @@ def check_collide2(enemy_im_l, enemy_im_r):
         tr = [0, 1, 2, 3]
         j = enemy2.rect.x // 50 + 1
         i = enemy2.rect.y // 50 + 1
-        print(i, j)
+        #print(i, j)
         if enemy2.rect.bottom >= w.rect.top and enemy2.rect.bottom <= w.rect.top + 7:
             if enemy2.rect.right > w.rect.left:
                 # enemy2.speed[1] *= -1
@@ -405,7 +426,7 @@ def check_collide2(enemy_im_l, enemy_im_r):
                     del tr[1]
                 if data[i][j + 1] == '1':
                     del tr[0]
-                print('down')
+                #print('down')
         elif enemy2.rect.top <= w.rect.bottom and enemy2.rect.top >= w.rect.bottom - 7:
             # enemy2.speed[1] *= -1
             enemy2.rect.top = w.rect.bottom + 10
@@ -414,7 +435,7 @@ def check_collide2(enemy_im_l, enemy_im_r):
                 del tr[1]
             if data[i][j + 1] == '1':
                 del tr[0]
-            print('up')
+            #print('up')
         elif enemy2.rect.right >= w.rect.left and enemy2.rect.right <= w.rect.left + 7:
             if enemy2.rect.bottom > w.rect.top:
                 # enemy2.speed[0] *= -1
@@ -424,7 +445,7 @@ def check_collide2(enemy_im_l, enemy_im_r):
                 if data[i + 1][j] == '1':
                     del tr[2]
                 del tr[0]
-                print('right')
+                #print('right')
         elif enemy2.rect.left <= w.rect.right and enemy2.rect.left >= w.rect.right - 7:
             # enemy2.speed[0] *= -1
             enemy2.rect.left = w.rect.right + 10
@@ -433,10 +454,10 @@ def check_collide2(enemy_im_l, enemy_im_r):
             if data[i + 1][j] == '1':
                 del tr[2]
             del tr[1]
-            print('left')
+            #print('left')
         y = random.choice(tr)
-        print(tr)
-        print(y)
+        #print(tr)
+        #print(y)
         if y == 0:
             enemy2.speed = [enemy_speed, 0]
             enemy2.image = enemy_im_l
@@ -448,7 +469,6 @@ def check_collide2(enemy_im_l, enemy_im_r):
         else:
             enemy2.speed = [0, -enemy_speed]
         break
-
 
     if pygame.sprite.collide_rect(player, door2):
         if coin.check_used:
@@ -472,6 +492,7 @@ def check_collide2(enemy_im_l, enemy_im_r):
             else:
                 game_over()
 
+
 def draw_all2(screen):
     screen.blit(bg1.convert(), (0, 0))
     screen.blit(player.image, player.rect)
@@ -479,6 +500,7 @@ def draw_all2(screen):
     items2.draw(screen)
     walls2.draw(screen)
     enemies2.draw(screen)
+
 
 def Pause():
     pygame.init()
@@ -513,7 +535,7 @@ def Pause():
                     items1.add(key)
                     items2.add(coin)
                     pygame.mixer.music.stop()
-                    room1()
+                    menu()
                     sys.exit()
                 elif quit_button.x <= x <= quit_button.x + quit_button.width and quit_button.y <= y <= quit_button.y + quit_button.height:
                     gameover = True
@@ -575,14 +597,56 @@ def logo():
                 if event.key == pygame.K_SPACE:
                     channel0.stop()
                     channel1.stop()
-                    room1()
+                    menu()
         u = pygame.time.get_ticks()
         if 6500 < u < 6750:
             channel0.play(music_gachi_logo)
         screen.blit(image_logo, (625, 300))
         pygame.display.flip()
         pygame.time.wait(10)
-    room1()
+    menu()
+
+
+def menu():
+    screen = pygame.display.set_mode(size)
+    gameover = False
+
+    start_button = Button(WIDTH - 400, 150, 276, 50, (218, 247, 166), 0, 'Calibri', 50, '         play')
+    quit_button = Button(WIDTH - 400, 205, 276, 50, (255, 87, 51), 0, 'Calibri', 50, '        quit')
+    pygame.mouse.set_cursor(*pygame.cursors.load_xbm('pcur.xbm', 'pcur.xbm'))
+    pygame.mouse.set_visible(True)
+    while not gameover:
+        for event in pygame.event.get():
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                x, y = event.pos
+                if x >= start_button.x and x <= start_button.x + start_button.width and y >= start_button.y and y <= start_button.y + start_button.height:
+                    gameover = True
+                    room1()
+                elif x >= quit_button.x and x <= quit_button.x + quit_button.width and y >= quit_button.y and y <= quit_button.y + quit_button.height:
+                    gameover = True
+                    sys.exit()
+            elif event.type == pygame.MOUSEMOTION:
+                x, y = event.pos
+                if x >= start_button.x and x <= start_button.x + start_button.width and y >= start_button.y and y <= start_button.y + start_button.height:
+                    start_button.border = 5
+                    start_button.process_draw(screen)
+                else:
+                    start_button.border = 0
+                    start_button.process_draw(screen)
+                if x >= quit_button.x and x <= quit_button.x + quit_button.width and y >= quit_button.y and y <= quit_button.y + quit_button.height:
+                    quit_button.border = 5
+                    quit_button.process_draw(screen)
+                else:
+                    quit_button.border = 0
+                    quit_button.process_draw(screen)
+            if event.type == pygame.QUIT:
+                gameover = True
+            screen.blit(image_pause, (0, 0))
+            start_button.process_draw(screen)
+            quit_button.process_draw(screen)
+            pygame.display.flip()
+            pygame.time.wait(10)
+    sys.exit()
 
 
 def room1():
@@ -683,6 +747,7 @@ def room2():
         pygame.display.update()
         pygame.time.delay(10)
 
+
 def fight():
     channel0.pause()
     channel1.play(music_fight)
@@ -723,6 +788,7 @@ def fight():
     player.speed = [0, 0]
     return check
 
+
 def game_over():
     channel1.stop()
     screen = pygame.display.set_mode(size)
@@ -731,6 +797,7 @@ def game_over():
     pygame.mouse.set_cursor(*pygame.cursors.diamond)
     pygame.mixer.music.load('lol.mp3')
     pygame.mixer.music.play()
+    pygame.time.delay(500)
     key.check_used = 0
     coin.check_used = 0
     exit_button = Button((WIDTH // 2) - 75, (HEIGHT // 2) + 35, 150, 50, (255, 0, 0), 0, 'Calibri', 50, 'Выйти')
@@ -751,7 +818,7 @@ def game_over():
                     gameover = True
                 elif x >= restart_button.x and x <= restart_button.x + restart_button.width and y >= restart_button.y and y <= restart_button.y + restart_button.height:
                     pygame.mixer.music.stop()
-                    room1()
+                    menu()
             exit_button.check_motion(screen, event, (255, 0, 0))
             restart_button.check_motion(screen, event, (255, 0, 0))
             if event.type == pygame.QUIT:
@@ -765,10 +832,11 @@ def game_over():
             pygame.time.wait(10)
     sys.exit()
 
+
 def win():
     channel1.stop()
     pygame.mouse.set_visible(True)
-    pygame.mouse.set_cursor(*pygame.cursors.load_xbm('wcur.xbm', 'wcur.xbm'))
+    # pygame.mouse.set_cursor(*pygame.cursors.load_xbm('wcur.xbm', 'wcur.xbm'))
     channel0.stop()
     pygame.init()
     pygame.mixer.init()
@@ -795,7 +863,7 @@ def win():
                 if x >= exit_button.x and x <= exit_button.x + exit_button.width and y >= exit_button.y and y <= exit_button.y + exit_button.height:
                     gameover = True
                 elif x >= restart_button.x and x <= restart_button.x + restart_button.width and y >= restart_button.y and y <= restart_button.y + restart_button.height:
-                    room1()
+                    menu()
             exit_button.check_motion(screen, event, (0, 0, 255))
             restart_button.check_motion(screen, event, (0, 0, 255))
             if event.type == pygame.QUIT:
@@ -808,5 +876,7 @@ def win():
             pygame.time.wait(10)
     sys.exit()
     room2()
+
+
 if __name__ == '__main__':
     logo()
