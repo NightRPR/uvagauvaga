@@ -273,9 +273,9 @@ def check_collide1(enemy_im_l, enemy_im_r):
     data = f.readlines()
     xz = pygame.sprite.spritecollide(player, enemies1, True)
     u = pygame.sprite.spritecollide(player, items1, True)
-    if u:
-        channel1 = pygame.mixer.Channel(1)
-        channel1.play(music_items)
+    # if u:
+    #    channel1 = pygame.mixer.Channel(1)
+    #    channel1.play(music_items)
 
     player_and_walls_hit_list = pygame.sprite.spritecollide(player, walls1, False)
     enemy_and_walls_hit_list = pygame.sprite.spritecollide(enemy1, walls1, False)
@@ -295,7 +295,7 @@ def check_collide1(enemy_im_l, enemy_im_r):
         tr = [0, 1, 2, 3]
         j = enemy1.rect.x // 50 + 1
         i = enemy1.rect.y // 50 + 1
-        #print(i, j)
+        # print(i, j)
         if enemy1.rect.bottom >= w.rect.top and enemy1.rect.bottom <= w.rect.top + 7:
             if enemy1.rect.right > w.rect.left:
                 # enemy1.speed[1] *= -1
@@ -395,9 +395,9 @@ def check_collide2(enemy_im_l, enemy_im_r):
     data = f.readlines()
     xz = pygame.sprite.spritecollide(player, enemies2, True)
     u = pygame.sprite.spritecollide(player, items2, True)
-    if u:
-        channel1 = pygame.mixer.Channel(1)
-        channel1.play(music_items)
+    # if u:
+    #    channel1 = pygame.mixer.Channel(1)
+    #    channel1.play(music_items)
     player_and_walls_hit_list = pygame.sprite.spritecollide(player, walls2, False)
     enemy_and_walls_hit_list = pygame.sprite.spritecollide(enemy2, walls2, False)
     for w in player_and_walls_hit_list:
@@ -416,7 +416,7 @@ def check_collide2(enemy_im_l, enemy_im_r):
         tr = [0, 1, 2, 3]
         j = enemy2.rect.x // 50 + 1
         i = enemy2.rect.y // 50 + 1
-        #print(i, j)
+        # print(i, j)
         if enemy2.rect.bottom >= w.rect.top and enemy2.rect.bottom <= w.rect.top + 7:
             if enemy2.rect.right > w.rect.left:
                 # enemy2.speed[1] *= -1
@@ -426,7 +426,7 @@ def check_collide2(enemy_im_l, enemy_im_r):
                     del tr[1]
                 if data[i][j + 1] == '1':
                     del tr[0]
-                #print('down')
+                # print('down')
         elif enemy2.rect.top <= w.rect.bottom and enemy2.rect.top >= w.rect.bottom - 7:
             # enemy2.speed[1] *= -1
             enemy2.rect.top = w.rect.bottom + 10
@@ -435,7 +435,7 @@ def check_collide2(enemy_im_l, enemy_im_r):
                 del tr[1]
             if data[i][j + 1] == '1':
                 del tr[0]
-            #print('up')
+            # print('up')
         elif enemy2.rect.right >= w.rect.left and enemy2.rect.right <= w.rect.left + 7:
             if enemy2.rect.bottom > w.rect.top:
                 # enemy2.speed[0] *= -1
@@ -445,7 +445,7 @@ def check_collide2(enemy_im_l, enemy_im_r):
                 if data[i + 1][j] == '1':
                     del tr[2]
                 del tr[0]
-                #print('right')
+                # print('right')
         elif enemy2.rect.left <= w.rect.right and enemy2.rect.left >= w.rect.right - 7:
             # enemy2.speed[0] *= -1
             enemy2.rect.left = w.rect.right + 10
@@ -454,10 +454,10 @@ def check_collide2(enemy_im_l, enemy_im_r):
             if data[i + 1][j] == '1':
                 del tr[2]
             del tr[1]
-            #print('left')
+            # print('left')
         y = random.choice(tr)
-        #print(tr)
-        #print(y)
+        # print(tr)
+        # print(y)
         if y == 0:
             enemy2.speed = [enemy_speed, 0]
             enemy2.image = enemy_im_l
